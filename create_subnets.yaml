@@ -8,8 +8,6 @@
     tenant: common
 
   tasks:
-    - name: get list of filters
-      include_vars: ./subnets.yaml
     - aci_bd:
         host: "{{ ansible_host }}"
         username: "{{ username }}"
