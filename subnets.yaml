@@ -1,0 +1,13 @@
+bridge_domains:
+  - bd_name: "VLAN10"
+    gateway: "172.16.10.1"
+    mask: 24
+  - bd_name: "VLAN11"
+    gateway: "172.16.11.1"
+    mask: 24 
+  - bd_name: "VLAN12"
+    gateway: "172.16.12.1"
+    mask: 24
+  - bd_name: "VLAN13"
+    gateway: "172.16.13.1"
+    mask: 24

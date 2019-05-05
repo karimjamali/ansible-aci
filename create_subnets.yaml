@@ -1,0 +1,36 @@
+---
+
+- name: ENSURE APPLICATION CONFIGURATION EXISTS
+  hosts: apic
+  connection: local
+  gather_facts: False
+  vars:
+    tenant: common
+
+  tasks:
+    - name: get list of filters
+      include_vars: ./subnets.yaml
+    - aci_bd:
+        host: "{{ ansible_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "present"
+        validate_certs: False
+        tenant: "{{ tenant }}"
+        bd: "{{ item.bd_name }}"
+        vrf: "{{ vrf }}"
+        description: "BD Created Using Ansible"
+      with_items: "{{bridge_domains}}"
+    - name: ENSURE BRIDGE DOMAIN SUBNET EXISTS
+      aci_bd_subnet:
+        host: "{{ ansible_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "present"
+        validate_certs: False
+        tenant: "{{ tenant }}"
+        bd: "{{ item.bd_name }}"
+        gateway: "{{ item.gateway }}"
+        mask: "{{ item.mask }}"
+        description: "Subnet Created Using Ansible"
+      with_items: "{{bridge_domains}}"

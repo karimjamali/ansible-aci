@@ -1,0 +1,39 @@
+---
+
+- name: ENSURE APPLICATION CONFIGURATION EXISTS
+  hosts: apic
+  connection: local
+  gather_facts: False
+  vars:
+    tenant: common
+
+  tasks:
+    - name: get list of filters
+      include_vars: ./filters.yaml
+    - name: ENSURE TENANT FILTERS EXIST
+      aci_filter:
+        host: "{{ ansible_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "present"
+        validate_certs: False
+        tenant: "{{ tenant }}"
+        filter: "{{ item }}"
+        descr: "Filter Created Using Ansible"
+      with_items: "{{filters}}"
+
+    - name: ENSURE FILTERS HAVE FILTER ENTRIES
+      aci_filter_entry:
+        host: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "present"
+        validate_certs: False
+        tenant: "{{ tenant }}"
+        filter: "{{ item.filter }}"
+        entry: "{{ item.entry }}"
+        ether_type: "ip"
+        ip_protocol: "tcp"
+        dst_port_start: "{{ item.port }}"
+        dst_port_end: "{{ item.port }}"
+      with_items: "{{filter_entries}}"

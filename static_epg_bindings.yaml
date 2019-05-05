@@ -1,0 +1,58 @@
+---
+- name: Static Bindings EPG to Interface
+  hosts: apic
+  connection: local
+  gather_facts: False
+
+  tasks:
+    - name: Import Variables YAML File
+      include_vars: ./bindings.yaml
+    - name: Create TENANT
+      aci_tenant:
+       host: "{{ ansible_host }}"
+       username: "{{ username }}"
+       password: "{{ password }}"
+       tenant: "{{ item.tenant }}"
+       validate_certs: no
+       description: Production tenant
+       state: present
+      with_items: "{{ mybindings }}"    
+    - name: Create Application Profile (AP)
+      aci_ap:
+       host: "{{ansible_host}}"
+       username: "{{ username }}"
+       password: "{{ password }}"
+       tenant: "{{ item.tenant }}"
+       ap: "{{ item.ap }}"
+       validate_certs: no
+       description: Production AP
+       state: present
+      with_items: "{{ mybindings }}"
+    - name: Create EPG
+      aci_epg:
+       host: "{{ansible_host}}"
+       username: "{{ username }}"
+       password: "{{ password }}"
+       tenant: "{{ item.tenant }}"
+       ap: "{{item.ap }}"
+       epg: "{{ item.epg }}"
+       validate_certs: no
+       state: present
+      with_items: "{{ mybindings }}"
+    - name: Deploy Static Path binding for EPG
+      aci_static_binding_to_epg:
+       host: "{{ ansible_host }}"
+       username: "{{ username }}"
+       password: "{{ password }}"
+       validate_certs: no
+       tenant: "{{ item.tenant }}"
+       ap: "{{ item.ap }}"
+       epg: "{{ item.epg }}"
+       encap_id: "{{ item.encap }}"
+       interface_type: switch_port
+       pod_id: 1
+       leafs: "{{ item.leaf }}"
+       interface: "{{ item.interface }}"
+       state: present
+      with_items: "{{ mybindings }}"
+

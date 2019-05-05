@@ -1,0 +1,15 @@
+---
+
+mybindings:
+  - tenant: "mytenant"
+    ap: "myap"
+    epg: "VLAN10"
+    leaf: 1
+    encap: 111
+    interface: '1/19'
+  - tenant: "mytenant"
+    ap: "myap"
+    epg: "VLAN10"
+    leaf: 1
+    encap: 111
+    interface: '1/20'

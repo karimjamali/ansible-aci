@@ -1,0 +1,12 @@
+---
+filters:
+  - "https1"
+  - "sql1"
+
+filter_entries:
+  - filter: "https"
+    entry: "https"
+    port: 443
+  - filter: "sql"
+    entry: "sql"
+    port: 1433
